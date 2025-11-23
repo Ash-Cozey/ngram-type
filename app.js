@@ -318,7 +318,7 @@ var ngramTypeConfig = {
                 $('.timer').countimer('resume');
             }
         },
-        keyDownHandler: function(e) {
+        keyHandler: function(e) {
             var key = e.key;
 
             // For other miscellaneous keys.
