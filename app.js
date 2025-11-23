@@ -342,6 +342,7 @@ var ngramTypeConfig = {
                 }
                 this.isInputCorrect = true;
                 this.hitsCorrect += 1;
+                this.currentWordIndex = 0;
             }
             else if (this.expectedPhrase !== typedPhrase.trimEnd()) {
                 if (this.data.soundIncorrectLetterEnabled) {
@@ -352,6 +353,20 @@ var ngramTypeConfig = {
                 this.isInputCorrect = false;
                 this.hitsWrong += 1;
             }
+
+            let expectedWords = this.expectedPhrase.split(/(\s+)/);
+            let typedWords = typedPhrase.split(/(\s+)/);
+
+            // determine the current word index that a user is typing
+            let currentWordIndex = 0;
+            for (let i = 0; i < typedWords.length; i++) {
+              if (typedWords[i] === expectedWords[i]) {
+                currentWordIndex = i + 1;
+              } else {
+                break;
+              }
+            }
+            this.currentWordIndex = currentWordIndex;
 
             if (typedPhrase.trimEnd() === this.expectedPhrase) {
                 var currentTime = new Date().getTime() / 1000;
@@ -405,34 +420,6 @@ var ngramTypeConfig = {
                 this.pauseTimer()
                 this.nextPhrase();
             }
-        },
-        keyUpHandler: function(e) {
-            var key = e.key;
-
-            // For other miscellaneous keys.
-            if (key.length > 1) {
-                return;
-            }
-
-            // Remove spaces at starting of the phrase
-            var typedPhrase = this.typedPhrase.trimStart();
-            if (!typedPhrase.length) {
-                return;
-            }
-
-            let expectedWords = this.expectedPhrase.split(/(\s+)/);
-            let typedWords = typedPhrase.split(/(\s+)/);
-
-            // determine the current word index that a user is typing
-            let currentWordIndex = 0;
-            for (let i = 0; i < typedWords.length; i++) {
-              if (typedWords[i] === expectedWords[i]) {
-                currentWordIndex = i + 1;
-              } else {
-                break;
-              }
-            }
-            this.currentWordIndex = currentWordIndex;
 
             if (!this.isInputCorrect) {
                 const wrongs = this['wrongs'];
